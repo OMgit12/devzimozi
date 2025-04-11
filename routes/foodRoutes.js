@@ -1,6 +1,6 @@
 const express = require("express");
 const authmiddleware = require("../middlewares/authmiddleware");
-const { createFood, getFoodByRestaurantId, updateFood, placeOrderFood } = require("../controller/foodController");
+const { createFood, getFoodByRestaurantId, updateFood, placeOrderFood, orderStatus } = require("../controller/foodController");
 
 const router = express.Router(); // create a new router object using express.Router()
 
@@ -16,5 +16,8 @@ router.put("/update/:id", authmiddleware, updateFood);
 
 // place order (post)
 router.post("/placeorder", authmiddleware, placeOrderFood);
+
+// status update of order (post)
+router.post("/status/:id", authmiddleware, orderStatus);
 
 module.exports = router; // export the router object so it can be used in other files

@@ -159,5 +159,50 @@ const placeOrderFood = async (req, res) => {
 
 }
 
-module.exports = { createFood, getFoodByRestaurantId, updateFood, placeOrderFood };
+
+const orderStatus = async (req, res) => {
+    try {
+        const oderId = req.params.id;
+        const status = req.body.status;
+
+        if (!oderId) {
+            return res.status(400).json({
+                status: false,
+                message: "Order id is required",
+            });
+        }
+
+        if (!status) {
+            return res.status(400).json({
+                status: false,
+                message: "Status is required",
+            });
+        }
+
+        const updateOrder = await Order.findByIdAndUpdate(oderId, { status }, { new: true });
+
+        if (!updateOrder) {
+            return res.status(400).json({
+                status: false,
+                message: "Order Not Found",
+                data: {}
+            })
+        }
+
+        return res.status(200).json({
+            status: true,
+            message: "Order status updated successfully",
+            data: updateOrder
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            status: false,
+            message: "Internal Server Error",
+            error: error.message
+        })
+    }
+}
+
+module.exports = { createFood, getFoodByRestaurantId, updateFood, placeOrderFood, orderStatus };
 
