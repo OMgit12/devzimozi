@@ -1,6 +1,7 @@
 const User = require("../models/userModel"); // import the User model
 const bcrypt = require("bcryptjs"); // import the bcrypt module for hashing passwords
 const jwt = require("jsonwebtoken"); // import the jsonwebtoken module for generating and verifying JWT tokens
+const UserValidation = require("../config/validation");
 
 const getUser = async (req, res) => {
   try {
@@ -36,6 +37,14 @@ const updateUser = async (req, res) => {
   try {
     const id = req.user.id;
     const { email, phone, address, name } = req.body;
+
+    const { error } = UserValidation.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    // Proceed with user creation
+    res.status(200).json({ message: 'User registered successfully' });
 
     const updateUser = await User.findByIdAndUpdate(
       id, // find the user by their ID
@@ -73,6 +82,16 @@ const updateUser = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const { email, newpassword, answer } = req.body;
+
+    // validate the request body
+    const { error } = UserValidation.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    // Proceed with user creation
+    res.status(200).json({ message: 'User registered successfully' });
+
     if (!email || !newpassword || !answer) {
       return res.status(400).json({
         status: false,
@@ -124,6 +143,15 @@ const updatePassword = async (req, res) => {
     const { id } = req.user;
     // console.log("id>>>>>>>>>", id);
     const { oldpassword, newpassword } = req.body;
+
+    const { error } = UserValidation.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+    // Proceed with user creation
+    res.status(200).json({ message: 'User registered successfully' });
+
 
     if (!oldpassword || !newpassword) {
       return res.status(400).json({
